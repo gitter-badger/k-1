@@ -396,7 +396,7 @@ so we can easily recognize them when we debug or trace the semantics. */
 
 //@ The dynamic semantics ignores all the type declarations:
 
-  rule datatype T = TCs E => E                               [macro]
+  rule datatype T = TCs E:Exp => E                               [macro]
 
 endmodule
 
@@ -666,7 +666,7 @@ way to achieve the benefits of tail recursion in \K.  */
 
   syntax KItem ::= env(Map)  // TODO: get rid of env
   //rule (env(_) => .) ~> env(_)  [anywhere]
-  rule <k> _:Val ~> (env(Rho) => .) ...</k> <env> _ => Rho </env>
+  rule <k> _:Val ~> (env(Rho) => .K) ...</k> <env> _ => Rho </env>
     [structural]
 
 /*@ \subsubsection{\texttt{bindTo}, \texttt{bind} and \texttt{assignTo}}
@@ -681,13 +681,13 @@ above. */
 
   rule bindTo(Xs:Names,Vs:Vals) => bindTo(getMatching(Xs,Vs))
 
-  rule bindTo(.Map) => .  [structural]
+  rule bindTo(.Map) => .K  [structural]
   rule <k> bindTo((X:Name |-> V:Val => .Map) _:Map) ...</k>
        <env> Rho => Rho[X <- !L:Int] </env>
        <store>... .Map => !L |-> V ...</store>
     [structural]
 
-  rule bind(.Names) => .                  [structural]
+  rule bind(.Names) => .K                  [structural]
   rule <k> bind(X:Name,Xs => Xs) ...</k>
        <env> Rho => Rho[X <- !L:Int] </env>
     [structural]
